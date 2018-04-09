@@ -1,0 +1,22 @@
+{
+    "name": "imbue/challonge-php",
+    "description": "Challonge PHP wrapper",
+    "license": "MIT",
+    "require": {
+        "php": ">=7.0",
+        "guzzlehttp/guzzle": "^6.3"
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-4": {
+            "Imbue\\Challonge\\": "src"
+        }
+    },
+    "authors": [
+        {
+            "name": "Liam Boer",
+            "email": "hello@liamm.nl"
+        }
+    ]
+}

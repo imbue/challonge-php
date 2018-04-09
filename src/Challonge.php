@@ -89,6 +89,7 @@ Class Challonge
             'query' => [
                 'api_key' => $this->api_key
             ],
+            'http_errors' => false,
         ]);
 
         switch ($http_verb) {
@@ -98,11 +99,17 @@ Class Challonge
             case 'post':
                 $response = $client->post($method, $args);
                 break;
+            case 'put':
+                $response = $client->put($method, $args);
+                break;
+            case 'delete':
+                $response = $client->delete($method, $args);
+                break;
         }
 
         $this->response = $response;
 
-        return $this->parseResponse($this->response);
+        return $this->parseResponse($response);
     }
 
     /**
@@ -131,34 +138,184 @@ Class Challonge
         return $this->makeRequest('post', $method, $args, $timeout);
     }
 
+    /**
+     * Make an HTTP PUT request.
+     *
+     * @param $method
+     * @param array $args
+     * @param int $timeout
+     * @return mixed
+     */
+    protected function put($method, $args = [], $timeout = self::TIMEOUT)
+    {
+        return $this->makeRequest('put', $method, $args, $timeout);
+    }
+
+    /**
+     * Make an HTTP DELETE request.
+     *
+     * @param $method
+     * @param array $args
+     * @param int $timeout
+     * @return mixed
+     */
+    protected function delete($method, $args = [], $timeout = self::TIMEOUT)
+    {
+        return $this->makeRequest('delete', $method, $args, $timeout);
+    }
+
     /*
-     * Retrieve a set of tournaments created with your account.
+     * Retrieve a set of tournaments.
      */
     public function getTournaments()
     {
-        return $this->get('tournaments');
+        return $this->get("tournaments");
     }
 
     /**
      * Retrieve a single tournament.
      *
-     * @param $tournament_id
+     * @param $tournament
      * @return array
      */
-    public function getTournament($tournament_id)
+    public function getTournament($tournament)
     {
-        return $this->get("tournaments/{$tournament_id}");
+        return $this->get("tournaments/{$tournament}");
     }
 
     /**
      * Create a new tournament.
      *
-     * @param $params
+     * @param array $params
      * @return mixed
      */
-    public function createTournament($params)
+    public function createTournament(array $params)
     {
-        return $this->post('tournaments', ['form_params' => $params]);
+        return $this->post("tournaments", ['form_params' => $params]);
+    }
+
+    /**
+     * Update an existing tournament.
+     *
+     * @param $tournament
+     * @param array $params
+     * @return mixed
+     */
+    public function updateTournament($tournament, array $params)
+    {
+        return $this->put("tournaments/{$tournament}", ['form_params' => $params]);
+    }
+
+    /**
+     * Delete a tournament.
+     *
+     * @param $tournament
+     * @return mixed
+     */
+    public function deleteTournament($tournament)
+    {
+        return $this->delete("tournaments/{$tournament}");
+    }
+
+    /**
+     * Retrieve a tournament's participant list.
+     *
+     * @param $tournament
+     * @return array
+     */
+    public function getParticipants($tournament)
+    {
+        return $this->get("tournaments/{$tournament}/participants");
+    }
+
+    /*
+    * Retrieve a single participant record for a tournament.
+    */
+    /**
+     * @param $tournament
+     * @param $participant
+     * @return array
+     */
+    public function getParticipant($tournament, $participant)
+    {
+        return $this->get("tournaments/{$tournament}/participants/{$participant}");
+    }
+
+    /**
+     * Add a participant to a tournament.
+     *
+     * @param $tournament
+     * @param array $params
+     * @return mixed
+     */
+    public function createParticipant($tournament, array $params)
+    {
+        return $this->post("tournaments/{$tournament}/participants", ['form_params' => $params]);
+    }
+
+    /**
+     * Update an existing tournament.
+     *
+     * @param $tournament
+     * @param $participant
+     * @param array $params
+     * @return mixed
+     */
+    public function updateParticipant($tournament, $participant, array $params)
+    {
+        return $this->put("tournaments/{$tournament}/participants/{$participant}", ['form_params' => $params]);
+    }
+
+    /**
+     * If the tournament has not started, delete a participant, automatically filling in the abandoned seed number. If tournament is underway, mark a participant inactive, automatically forfeiting his/her remaining matches.
+     *
+     * @param $tournament
+     * @param $participant
+     * @return mixed
+     */
+    public function deleteParticipant($tournament, $participant)
+    {
+        return $this->delete("tournaments/{$tournament}/participants/{$participant}");
+    }
+
+    /**
+     * Randomize seeds among participants. Only applicable before a tournament has started.
+     *
+     * @param $tournament
+     * @return mixed
+     */
+    public function randomizeParticipants($tournament)
+    {
+        return $this->post("tournaments/{$tournament}/participants/randomize");
+    }
+
+    /*
+     * Retrieve a set of matches.
+     */
+    public function getMatches($tournament)
+    {
+        return $this->get("tournaments/{$tournament}/matches");
+    }
+
+    /*
+    * Retrieve a single match.
+    */
+    public function getMatch($tournament, $match)
+    {
+        return $this->get("tournaments/{$tournament}/matches/{$match}");
+    }
+
+    /**
+     * Update an existing tournament.
+     *
+     * @param $tournament
+     * @param $match
+     * @param array $params
+     * @return mixed
+     */
+    public function updateMatch($tournament, $match, array $params)
+    {
+        return $this->put("tournaments/{$tournament}/matches/{$match}", ['form_params' => $params]);
     }
 
     /**

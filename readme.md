@@ -23,7 +23,7 @@ $tournament = $challonge->getTournament('tournament_id');
 ```
 
 ```
-// Create a new tounament
+// Create a new tournament
 $tourament = $challonge->createTournament([
     'tournament' => [
         'name' => 'Tournament name',

@@ -24,24 +24,21 @@ $tournament = $challonge->getTournament('tournament_id');
 
 ```
 // Create a new tounament
-$tourament = $challonge->createTournament(
-    [
-        'tournament' => [
-            'name' => 'Tournament name',
-            'url' => 'imbues_new_tournament',
-            ...
+$tourament = $challonge->createTournament([
+    'tournament' => [
+        'name' => 'Tournament name',
+        'url' => 'imbues_new_tournament',
+        ...
     ]
 ]);
 
 // Update an existing tournament
-$tournament = $challonge->updateTournament($tournament,
-    [
-        'tournament' => [
-            'name' => 'New tournament name',
-            ...
-        ]
+$tournament = $challonge->updateTournament($tournament, [
+    'tournament' => [
+        'name' => 'New tournament name',
+        ...
     ]
-);
+]);
 
 // for the full list of available parameters visit: https://api.challonge.com/v1/documents/tournaments/create
 ```
